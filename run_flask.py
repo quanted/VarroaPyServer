@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 
-from flask import Flask, Response, request, jsonify, render_template
+from flask import Flask, Response, request, jsonify, render_template, send_file
 from flask_restful import Resource, Api, reqparse, abort
 
 from VarroaPy.VarroaPy.RunVarroaPop import VarroaPop
@@ -44,17 +44,43 @@ class VPServer(Resource):
     def post(self):
         args = parser.parse_args()
         params = args['parameters']
-        print(params)
-        params = json.loads(params)
+        params = json.loads(params.replace("'", '"'))
         weather = args['weather_file']
-        vp = VarroaPop(parameters= params, weather_file = weather)
+        vp = VarroaPop(parameters= params, weather_file = weather, logs=True, save=True)
         vp.run_model()
         output = vp.get_output(json_str= True)
-        return json.loads(output)
+        jobID = vp.get_jobID()
+        return json.loads(output), {"session-id": jobID}
+
+
+class VPGetInput(Resource):
+    def get(self, session_id):
+        path = os.path.abspath('VarroaPy/VarroaPy/files/input/')
+        filename = 'vp_input_' + session_id + '.txt'
+        to_read = os.path.join(path, filename)
+        return send_file(to_read)
+
+
+class VPGetLog(Resource):
+    def get(self, session_id):
+        path = os.path.abspath('VarroaPy/VarroaPy/files/logs/')
+        filename = 'vp_log_' + session_id + '.txt'
+        to_read = os.path.join(path, filename)
+        return send_file(to_read)
+
+
+class VPGetOutput(Resource):
+    def get(self, session_id):
+        path = os.path.abspath('VarroaPy/VarroaPy/files/output/')
+        filename = 'vp_results_' + session_id + '.txt'
+        to_read = os.path.join(path, filename)
+        return send_file(to_read)
 
 
 api.add_resource(VPServer, '/varroapop/run/')
-
+api.add_resource(VPGetInput, '/varroapop/files/input/<session_id>')
+api.add_resource(VPGetLog, '/varroapop/files/logs/<session_id>')
+api.add_resource(VPGetOutput, '/varroapop/files/output/<session_id>')
 
 
 if __name__ == '__main__':
