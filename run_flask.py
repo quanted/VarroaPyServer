@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 
-from flask import Flask, Response, request, jsonify, render_template, send_file
+from flask import Flask, Response, request, jsonify, render_template, send_file, send_from_directory
 from flask_restful import Resource, Api, reqparse, abort
 
 from VarroaPy.VarroaPy.RunVarroaPop import VarroaPop
@@ -57,24 +57,21 @@ class VPGetInput(Resource):
     def get(self, session_id):
         path = os.path.abspath('VarroaPy/VarroaPy/files/input/')
         filename = 'vp_input_' + session_id + '.txt'
-        to_read = os.path.join(path, filename)
-        return send_file(to_read)
+        return send_from_directory(path,filename)
 
 
 class VPGetLog(Resource):
     def get(self, session_id):
         path = os.path.abspath('VarroaPy/VarroaPy/files/logs/')
         filename = 'vp_log_' + session_id + '.txt'
-        to_read = os.path.join(path, filename)
-        return send_file(to_read)
+        return send_from_directory(path,filename)
 
 
 class VPGetOutput(Resource):
     def get(self, session_id):
         path = os.path.abspath('VarroaPy/VarroaPy/files/output/')
         filename = 'vp_results_' + session_id + '.txt'
-        to_read = os.path.join(path, filename)
-        return send_file(to_read)
+        return send_from_directory(path,filename)
 
 
 api.add_resource(VPServer, '/varroapop/run/')
@@ -84,4 +81,5 @@ api.add_resource(VPGetOutput, '/varroapop/files/output/<session_id>')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)
