@@ -1,7 +1,7 @@
 # Use an official Python runtime as a parent image
 FROM python:3.7.0-windowsservercore-ltsc2016
 
-ADD https://aka.ms/vs/15/release/vc_redist.x86.exe /vc_redist.x86.exe
+ADD https://go.microsoft.com/fwlink/?LinkId=746572 /vc_redist.x86.exe
 RUN C:\vc_redist.x86.exe /quiet /install
 
 # Set the working directory to /app
