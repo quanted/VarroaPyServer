@@ -7,6 +7,8 @@ import requests
 
 from flask import Flask, Response, request, jsonify, render_template, send_file, send_from_directory
 from flask_restful import Resource, Api, reqparse, abort
+from waitress import serve
+
 
 from VarroaPy.VarroaPy.RunVarroaPop import VarroaPop
 
@@ -82,4 +84,5 @@ api.add_resource(VPGetOutput, '/varroapop/files/output/<session_id>')
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    app.run(host='0.0.0.0', port=80)
+    #app.run(host='0.0.0.0', port=80)
+    serve(app, host='0.0.0.0', port = 4000)
