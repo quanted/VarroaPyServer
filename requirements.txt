@@ -1,5 +1,4 @@
 pandas
-Flask
-Flask_restful
-requests
+flask
+flask-restful
 waitress
