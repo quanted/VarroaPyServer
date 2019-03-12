@@ -48,7 +48,7 @@ class VPServer(Resource):
         params = args['parameters']
         params = json.loads(params.replace("'", '"'))
         weather = args['weather_file']
-        vp = VarroaPop(parameters= params, weather_file = weather, logs=True, save=True)
+        vp = VarroaPop(parameters= params, weather_file = weather, logs=True, keep_files=True)
         vp.run_model()
         output = vp.get_output(json_str= True)
         jobID = vp.get_jobID()
