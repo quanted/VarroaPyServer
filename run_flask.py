@@ -5,11 +5,12 @@ import logging
 from flask import Flask, Response, request, jsonify, render_template, send_file, send_from_directory
 from flask_restful import Resource, Api, reqparse, abort
 from waitress import serve
+from utilities import clean_files
 
 
 from VarroaPy.VarroaPy.RunVarroaPop import VarroaPop
 
-LOCAL_DEV = False
+LOCAL_DEV = True
 
 try:
     from flask_cors import CORS
@@ -43,6 +44,9 @@ class VPServer(Resource):
         return {'hello': 'world'}
 
     def post(self):
+        clean_files(os.path.abspath('VarroaPy/VarroaPy/files/input'), 7)
+        clean_files(os.path.abspath('VarroaPy/VarroaPy/files/logs'), 7)
+        clean_files(os.path.abspath('VarroaPy/VarroaPy/files/output'), 7)
         args = parser.parse_args()
         params = args['parameters']
         params = json.loads(params.replace("'", '"'))
