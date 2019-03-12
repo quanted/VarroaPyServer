@@ -1,9 +1,6 @@
 import json
 import os
 import logging
-import pandas as pd
-import requests
-
 
 from flask import Flask, Response, request, jsonify, render_template, send_file, send_from_directory
 from flask_restful import Resource, Api, reqparse, abort
@@ -11,6 +8,8 @@ from waitress import serve
 
 
 from VarroaPy.VarroaPy.RunVarroaPop import VarroaPop
+
+LOCAL_DEV = False
 
 try:
     from flask_cors import CORS
@@ -48,7 +47,7 @@ class VPServer(Resource):
         params = args['parameters']
         params = json.loads(params.replace("'", '"'))
         weather = args['weather_file']
-        vp = VarroaPop(parameters= params, weather_file = weather, logs=True, keep_files=True)
+        vp = VarroaPop(parameters= params, weather_file=weather, logs=True, keep_files=True)
         vp.run_model()
         output = vp.get_output(json_str= True)
         jobID = vp.get_jobID()
@@ -85,4 +84,8 @@ api.add_resource(VPGetOutput, '/varroapop/files/output/<session_id>')
 if __name__ == '__main__':
     #app.run(debug=True)
     #app.run(host='0.0.0.0', port=80)
-    serve(app, host='0.0.0.0', port = 4000)
+    if LOCAL_DEV:
+        serve(app, host='127.0.0.1', port=5050)
+    else:
+        serve(app, host='0.0.0.0', port=5050)
+
