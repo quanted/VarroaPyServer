@@ -10,7 +10,7 @@ from utilities import clean_files
 
 from VarroaPy.VarroaPy.RunVarroaPop import VarroaPop
 
-LOCAL_DEV = True
+LOCAL_DEV = False
 
 try:
     from flask_cors import CORS
